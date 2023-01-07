@@ -12,7 +12,7 @@ class ProductCard extends StatelessWidget {
         decoration: _cardBorders(),
         child: Stack(
           alignment: Alignment.bottomLeft,
-          children: [
+          children: const [
             _BackgroundImage(),
             _ProductDetails(),
             Positioned(
@@ -42,19 +42,19 @@ class _NotAvailable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FittedBox(
+      width: 100,
+      height: 70,
+      decoration: BoxDecoration(
+          color: Colors.yellow[800],
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25), bottomRight: Radius.circular(25))),
+      child: const FittedBox(
         fit: BoxFit.contain,
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text('No Disponible',
                 style: TextStyle(color: Colors.white, fontSize: 20))),
       ),
-      width: 100,
-      height: 70,
-      decoration: BoxDecoration(
-          color: Colors.yellow[800],
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25), bottomRight: Radius.circular(25))),
     );
   }
 }
@@ -67,20 +67,20 @@ class _PriceTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: FittedBox(
+      width: 100,
+      height: 70,
+      alignment: Alignment.center,
+      decoration: const BoxDecoration(
+          color: Colors.indigo,
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25), topRight: Radius.circular(25))),
+      child: const FittedBox(
         fit: BoxFit.contain,
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Text('\$103.99',
                 style: TextStyle(color: Colors.white, fontSize: 20))),
       ),
-      width: 100,
-      height: 70,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          color: Colors.indigo,
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25), topRight: Radius.circular(25))),
     );
   }
 }
@@ -93,30 +93,34 @@ class _ProductDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(right: 50),
+      padding: const EdgeInsets.only(right: 50),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         width: double.infinity,
         height: 70,
         decoration: _buildBoxDecoration(),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            'Disco Duro G',
-            style: TextStyle(
-                fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          Text(
-            'id del disco duro',
-            style: TextStyle(fontSize: 15, color: Colors.white),
-          ),
-        ]),
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              Text(
+                'Disco Duro G',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              Text(
+                'id del disco duro',
+                style: TextStyle(fontSize: 15, color: Colors.white),
+              ),
+            ]),
       ),
     );
   }
 
-  BoxDecoration _buildBoxDecoration() => BoxDecoration(
+  BoxDecoration _buildBoxDecoration() => const BoxDecoration(
       color: Colors.indigo,
       borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(25), topRight: Radius.circular(25)));
