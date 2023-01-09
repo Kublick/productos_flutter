@@ -1,9 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:productos_app/providers/product_form_provider.dart';
+import 'package:productos_app/services/product_service.dart';
 import 'package:productos_app/widgets/product_image.dart';
+import 'package:provider/provider.dart';
 import '../ui/input_decorations.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final productService = Provider.of<ProductsService>(context);
+    return ChangeNotifierProvider(
+        create: (_) => ProductFormProvider(productService.selectedProduct),
+        child: _ProductScreenBody(productService: productService));
+  }
+}
+
+class _ProductScreenBody extends StatelessWidget {
+  const _ProductScreenBody({
+    Key? key,
+    required this.productService,
+  }) : super(key: key);
+
+  final ProductsService productService;
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +33,7 @@ class ProductScreen extends StatelessWidget {
             child: Column(
           children: [
             Stack(children: [
-              const ProductImage(),
+              ProductImage(url: productService.selectedProduct.picture),
               Positioned(
                 top: 60,
                 left: 20,
@@ -32,7 +53,7 @@ class ProductScreen extends StatelessWidget {
                         color: Colors.white)),
               ),
             ]),
-            const _ProductForm(),
+            _ProductForm(),
             const SizedBox(height: 100),
           ],
         )),
@@ -45,12 +66,11 @@ class ProductScreen extends StatelessWidget {
 }
 
 class _ProductForm extends StatelessWidget {
-  const _ProductForm({
-    Key? key,
-  }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
+    final productForm = Provider.of<ProductFormProvider>(context);
+    final product = productForm.product;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Container(
@@ -62,21 +82,39 @@ class _ProductForm extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             TextFormField(
+                initialValue: product.name,
+                onChanged: (value) => product.name = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'El Nombre es obligatorio';
+                  }
+                  return null;
+                },
                 decoration: InputDecorations.authInputDecoration(
                     hintText: 'Nombre del Producto', labelText: "Nombre:")),
             const SizedBox(height: 30),
             TextFormField(
+                initialValue: '${product.price}',
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(
+                      RegExp(r'^(\d+)?\.?\d{0,2}'))
+                ],
+                onChanged: (value) {
+                  if (double.tryParse(value) == null) {
+                    product.price = 0;
+                  } else {
+                    product.price = double.parse(value);
+                  }
+                },
                 keyboardType: TextInputType.number,
                 decoration: InputDecorations.authInputDecoration(
                     hintText: '\$ 150', labelText: "Precio:")),
             const SizedBox(height: 30),
             SwitchListTile(
-                value: true,
+                value: product.available,
                 title: const Text('Disponible'),
                 activeColor: Colors.indigo,
-                onChanged: (value) => {
-                      //TODO Pendiente
-                    }),
+                onChanged: productForm.updateAvailability),
             const SizedBox(height: 30),
           ],
         )),
@@ -84,7 +122,7 @@ class _ProductForm extends StatelessWidget {
     );
   }
 
-  BoxDecoration _buildBoxDecoration() => BoxDecoration(
+  BoxDecoration _buildBoxDecoration() => const BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(25), bottomRight: Radius.circular(25)));
