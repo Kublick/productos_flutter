@@ -4,6 +4,8 @@ import 'package:productos_app/services/services.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
+import '../models/models.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -28,8 +30,16 @@ class HomeScreen extends StatelessWidget {
               child: ProductCard(
                 product: productsService.products[index],
               ))),
-      floatingActionButton:
-          FloatingActionButton(child: const Icon(Icons.add), onPressed: () {}),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.add),
+          onPressed: () {
+            productsService.selectedProduct = Product(
+              available: true,
+              name: '',
+              price: 0,
+            );
+            Navigator.pushNamed(context, 'product');
+          }),
     );
   }
 }
